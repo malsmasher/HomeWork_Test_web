@@ -1,5 +1,6 @@
 package ru.netology;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,17 +13,18 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.By.cssSelector;
 
-class ApplicationCardTest {
+public class ApplicationCardTest {
     private WebDriver driver;
 
     @BeforeAll
     public static void setupAll() {
-        System.setProperty("webdriver.chrome.driver", "driver/win/chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
     }
 
     @BeforeEach
-    public void BeforeEach() {
+    public void setup() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--no-sandbox");
@@ -32,18 +34,18 @@ class ApplicationCardTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void tearDown() {
         driver.quit();
         driver = null;
     }
 
     @Test
     public void shouldBeSuccessfulForm() {
-        driver.findElement(By.cssSelector("[data-test-id=`name`] input")).sendKeys("Иванов Иван");
-        driver.findElement(By.cssSelector("[data-test-id=`phone`] input")).sendKeys("+79000000000");
-        driver.findElement(By.cssSelector("[data-tes-id=`agreement`]")).click();
+        driver.findElement(By.cssSelector("[data-test-id =`name`] input")).sendKeys("Иванов Иван");
+        driver.findElement(By.cssSelector("[data-test-id =`phone`] input")).sendKeys("+79000000000");
+        driver.findElement(By.cssSelector("[data-tes-id =`agreement`]")).click();
         driver.findElement(By.cssSelector("button.button")).click();
-        WebElement actualElement = driver.findElement(By.cssSelector("[data-test-id=order-success]"));
+        WebElement actualElement = driver.findElement(cssSelector("[data-test-id=order-success]"));
         String actualText = actualElement.getText().trim();
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", actualText);
         assertTrue(actualElement.isDisplayed());
